@@ -12,6 +12,14 @@ type Fish struct {
 	Name string
 	Age  int
 }
+type Dog struct {
+	Name string
+	Age  int
+}
+
+func (dog *Dog) Swim() {
+	fmt.Println("dog is swimming")
+}
 
 func (fish *Fish) Swim() {
 	fmt.Println("fish is swiming")
@@ -30,6 +38,11 @@ func main() {
 		Name: "Nemo",
 		Age:  3,
 	}
+	var dog Dog = Dog{
+		Name: "Nemo",
+		Age:  3,
+	}
+	dog.Swim()
 	fish.Swim()
 	fish.ChangeAge(4)
 	fish.ChangeName("Dory")
