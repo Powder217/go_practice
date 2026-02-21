@@ -2,6 +2,12 @@ package main
 
 import "fmt"
 
+// 1. 将数组不断二分，直到子数组长度为 1
+// 2. 递归排序左半部分
+// 3. 递归排序右半部分
+// 4. 将两个已排序的子数组合并为一个有序数组
+// 5. 将合并结果写回原数组对应区间
+
 // 时间复杂度为O(nlog2^n) 空间复杂度为O(n)
 func MergeSoft(arr []int) {
 	temp := make([]int, len(arr))
