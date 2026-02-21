@@ -9,5 +9,9 @@ func main() {
 	// InsertionSort(testarr1)
 	// ShellSort(testarr2)
 	// QuickSort(testarr1)
-	MergeSoft(testarr1)
+	// MergeSoft(testarr1)
+	// HeapSort(testarr1)
+	// Counte_Sort(testarr1)
+	// BucketSoft(testarr1, 5)
+	RedixSort(testarr1)
 }
