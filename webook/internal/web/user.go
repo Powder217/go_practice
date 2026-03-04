@@ -38,7 +38,7 @@ func (u *UserHandler)RegisterRoutes(server *gin.Engine){
 	ug.GET("/profile",u.Profile)
 }
 
-func (u *UserHandler) SignUp(ctx *gin.Context){
+func (h *UserHandler) SignUp(ctx *gin.Context){
 
 	// 内部结构体
 	type SignUpReq struct{
@@ -61,13 +61,13 @@ func (u *UserHandler) SignUp(ctx *gin.Context){
 
 	// 注册校验
 
-	u.emailRegex=regexp2.MustCompile(emailregex,regexp2.None)
-	u.passwordRegex=regexp2.MustCompile(passwordregex,regexp2.None)
+	h.emailRegex=regexp2.MustCompile(emailregex,regexp2.None)
+	h.passwordRegex=regexp2.MustCompile(passwordregex,regexp2.None)
 	if req.ConfirmPassWord!=req.PassWord{
 		ctx.String(http.StatusOK,"两次密码输入不一致")
 		return
 	}
-	ok,err:=u.emailRegex.MatchString(req.Email)
+	ok,err:=h.emailRegex.MatchString(req.Email)
 	if err!=nil{
 		ctx.String(http.StatusOK,"系统错误")
 		return 
@@ -76,7 +76,7 @@ func (u *UserHandler) SignUp(ctx *gin.Context){
 		ctx.String(http.StatusOK,"邮箱格式错误")
 		return
 	}
-	ok,err=u.passwordRegex.MatchString(req.PassWord)
+	ok,err=h.passwordRegex.MatchString(req.PassWord)
 	if err!=nil{
 		ctx.String(http.StatusOK,"系统错误")
 		return
@@ -85,9 +85,9 @@ func (u *UserHandler) SignUp(ctx *gin.Context){
 		ctx.String(http.StatusOK,"密码格式有误,密码长度必须大于8位且包含数字、特殊字符、大小写字母")
 		return
 	}
-	err=u.svc.SignUp(ctx,domain.User{
+	err=h.svc.SignUp(ctx,domain.User{
 		Email: req.Email,
-		Password: req.PassWord,
+		PassWord: req.PassWord,
 	})
 	if err ==service.ErrUserDuplicateEmail{
 		ctx.String(http.StatusOK,"邮箱已存在")
@@ -98,7 +98,28 @@ func (u *UserHandler) SignUp(ctx *gin.Context){
 
 }	
 
-func (u *UserHandler) Login(ctx *gin.Context){
+func (h *UserHandler) Login(ctx *gin.Context){
+	type LoginReq struct{
+		Email string `json:"email"`
+		PassWord string `json:"password"`
+	}
+
+	var req LoginReq
+	if err:=ctx.Bind(&req);err!=nil{
+		return
+	}
+	err:=h.svc.Login(ctx,req.Email,req.PassWord)
+
+	if err==service.ErrInvalidUserOrPassword{
+		ctx.String(http.StatusOK,"用户名或密码错误")
+		return 
+	}
+	if err!=nil{
+		ctx.String(http.StatusOK,"系统错误")
+		return
+	}
+	ctx.String(http.StatusOK,"登陆成功")
+
 
 }
 
