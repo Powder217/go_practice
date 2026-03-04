@@ -7,6 +7,10 @@ import (
 	"github.com/Powder217/go_practice/webook/internal/repository/dao"
 )
 
+var(
+	ErrUserDuplicateEmail=dao.ErrUserDuplicateEmail
+)
+
 type UserRepository struct{
 	dao *dao.UserDAO
 }

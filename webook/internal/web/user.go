@@ -15,7 +15,6 @@ const (
 	passwordregex = `^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])?[A-Za-z\d!@#$%^&*]{8,}$`
 )	
 
-// UserHandler 我准备在这上面定义所有和用户相关的路由
 type UserHandler struct{
 	emailRegex *regexp2.Regexp
 	passwordRegex *regexp2.Regexp
@@ -24,9 +23,9 @@ type UserHandler struct{
 
 func NewUserHandler(svc *service.UserService)*UserHandler{
 	return &UserHandler{
-		svc:svc,
 		emailRegex: regexp2.MustCompile(emailregex,regexp2.None),
 		passwordRegex: regexp2.MustCompile(passwordregex,regexp2.None),
+		svc:svc,
 	}
 }
 
@@ -47,7 +46,9 @@ func (u *UserHandler) SignUp(ctx *gin.Context){
 		ConfirmPassWord string `json:"confirmPassword"`
 		PassWord string `json:"password"`
 	}
+	
 	var req SignUpReq
+
 	// Bind会根据方法和Content-Type自动选择绑定引擎，根据“Content-Type”头部信息，会使用不同的绑定方式，例如：
 	// "application/json" --> JSON绑定
 	// "application/xml" --> XML绑定
@@ -88,8 +89,8 @@ func (u *UserHandler) SignUp(ctx *gin.Context){
 		Email: req.Email,
 		Password: req.PassWord,
 	})
-	if err !=nil{
-		ctx.String(http.StatusOK,"系统错误")
+	if err ==service.ErrUserDuplicateEmail{
+		ctx.String(http.StatusOK,"邮箱已存在")
 		return 
 	}
 
