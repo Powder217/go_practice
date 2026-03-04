@@ -9,5 +9,6 @@ func main() {
 	// Permutation_arrary(arr,0,len(arr)-1)
 	// fmt.Println(FindPeak(arr,0,len(arr)-1))
 	// fmt.Println(FindMajor(arr))
-	fmt.Println(FindMajor2(arr))
+	// fmt.Println(FindMajor2(arr))
+	fmt.Println(FindMode(arr))
 }
