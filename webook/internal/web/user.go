@@ -6,6 +6,7 @@ import (
 	"github.com/Powder217/go_practice/webook/internal/domain"
 	"github.com/Powder217/go_practice/webook/internal/service"
 	"github.com/dlclark/regexp2"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -108,7 +109,7 @@ func (h *UserHandler) Login(ctx *gin.Context){
 	if err:=ctx.Bind(&req);err!=nil{
 		return
 	}
-	err:=h.svc.Login(ctx,req.Email,req.PassWord)
+	u,err:=h.svc.Login(ctx,req.Email,req.PassWord)
 
 	if err==service.ErrInvalidUserOrPassword{
 		ctx.String(http.StatusOK,"用户名或密码错误")
@@ -118,6 +119,12 @@ func (h *UserHandler) Login(ctx *gin.Context){
 		ctx.String(http.StatusOK,"系统错误")
 		return
 	}
+
+	// 设置session
+	session:=sessions.Default(ctx)
+	// 可以处理session的各个值	
+	session.Set("userId",u.Id)
+	session.Save()
 	ctx.String(http.StatusOK,"登陆成功")
 
 
@@ -128,5 +135,5 @@ func (u *UserHandler) Edit (ctx *gin.Context){
 }
 
 func (u *UserHandler) Profile(ctx *gin.Context){
-
+	ctx.String(http.StatusOK,"profile")
 }

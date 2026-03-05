@@ -8,7 +8,10 @@ import (
 	"github.com/Powder217/go_practice/webook/internal/repository/dao"
 	"github.com/Powder217/go_practice/webook/internal/service"
 	"github.com/Powder217/go_practice/webook/internal/web"
+	"github.com/Powder217/go_practice/webook/internal/web/middleware"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -73,5 +76,10 @@ func initWebServer()*gin.Engine{
     },
     MaxAge: 12 * time.Hour,
 	}))
+
+	// 登陆校验
+ 	store := cookie.NewStore([]byte("secret"))
+  	server.Use(sessions.Sessions("mysession", store))
+	server.Use(middleware.NewLoginMiddleWareBuilder().CheckLogin())
 	return server
 }
